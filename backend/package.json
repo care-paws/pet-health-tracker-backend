@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p .",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test:unit": "vitest -c ./vitest.config.unit.ts",
+    "test:unit:ui": "vitest -c ./vitest.config.unit.ts --ui"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +21,9 @@
     "prisma": "^6.19.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.10",
+    "vitest-mock-extended": "^3.1.0"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
