@@ -1,10 +1,21 @@
-import type { AuthService } from "../services/auth-service.js";
+import { z } from 'zod';
 
+export interface IAuthService {
+  register: (data: RegisterPayload) => Promise<void>;
+  login: (...args: any) => Promise<any>;
+}
 export interface ControllerDeps {
-    authService: InstanceType<typeof AuthService>; 
+  authService: IAuthService;
 }
 
 export interface RegisterPayload {
-    email: string;
-    passwordHash: string;
+  email: string;
+  passwordHash: string;
 }
+
+export const registerSchema = z.object({
+  email: z.email(),
+  password: z.string().min(6),
+});
+
+export type RegisterSchema = z.infer<typeof registerSchema>;
