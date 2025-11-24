@@ -1,7 +1,7 @@
 import type { PrismaClient } from '../generated/prisma/client.js';
-import type { RegisterPayload } from '../types/auth-types.js';
-import { ValidationError } from '../types/errors.js';
-import { hash } from '../utils/auth.js';
+import type { RegisterPayload, SafeUser } from '../types/auth-types.js';
+import { NotFoundError, ValidationError } from '../types/errors.js';
+import { hash, compare } from '../utils/auth.js';
 
 export class AuthService {
   prisma: PrismaClient;
@@ -10,7 +10,7 @@ export class AuthService {
     this.prisma = prisma;
   }
 
-  async register(data: RegisterPayload) {
+  async register(data: RegisterPayload): Promise<void> {
     const existingUser = await this.prisma.user.findUnique({
       where: { email: data.email },
     });
@@ -23,5 +23,21 @@ export class AuthService {
     });
   }
 
-  async login() {}
+  async login(data: RegisterPayload): Promise<SafeUser> {
+    const foundUser = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+    if (!foundUser) {
+      throw new NotFoundError('User not found.');
+    }
+    const isValidPassword = await compare(
+      data.password,
+      foundUser.passwordHash
+    );
+    if (!isValidPassword) {
+      throw new ValidationError('Invalid credentials');
+    }
+    const { passwordHash, ...safeUser } = foundUser;
+    return safeUser;
+  }
 }
