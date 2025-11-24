@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { secret } from '../middlewares/auth.js';
 import type { TokenPayload } from '../types/auth-types.js';
+
+const secret = process.env.JWT_SECRET || 'test'
 
 export async function hash(password: string): Promise<string> {
   return await bcrypt.hash(password, 10);

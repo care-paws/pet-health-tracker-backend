@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { User } from '../generated/prisma/client.js';
+import type { JwtPayload } from 'jsonwebtoken';
 
 export interface IAuthService {
   register: (data: RegisterPayload) => Promise<void>;
@@ -31,7 +32,7 @@ export interface TokenPayload {
 declare global {
   namespace Express {
     interface Request {
-      user?: TokenPayload | undefined;
+      user?: JwtPayload | string | undefined;
     }
   }
 }
