@@ -45,7 +45,7 @@ export const petController = (deps:ControllerDeps) => ({
       if ((consultPetsUser.length === 0))  {
         res.status(400).json({message: "No tiene mascotas registradas"});
       }        
-      return res.status(201).json({ 
+      return res.status(200).json({ 
         message:"Listado de mascotas encontradas", 
         data: consultPetsUser, 
       });
@@ -67,7 +67,7 @@ export const petController = (deps:ControllerDeps) => ({
         return res.status(404).json({
           message: "La mascota no existe" }); 
       }
-      return res.status(201).json({
+      return res.status(200).json({
         message:"Mascota Encontrada con exito",
         data: consultPetIdId});
     }catch{
@@ -127,7 +127,7 @@ export const petController = (deps:ControllerDeps) => ({
         message: "La mascota no existe o ya fue eliminada"});
       }
       const deletePetId = await deps.petService.deletePet (petId)
-      return res.status(201).json({
+      return res.status(200).json({
         message:"Mascota Eliminada",
         data: deletePetId });
     }catch{
