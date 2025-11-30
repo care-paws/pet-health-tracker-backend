@@ -8,6 +8,13 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ) {
+ if (err && typeof err === 'object' && 'name' in err) {
+    if (err.name === 'TokenExpiredError' || err.name === 'JsonWebTokenError' || err.name === 'NotBeforeError') {
+      return res.status(401).json({ 
+        message: 'message' in err ? err.message : 'Authentication error' 
+      });
+    }
+  }
   if (err instanceof ZodError) {
     return res.status(400).json({ errors: z.flattenError(err) });
   }
