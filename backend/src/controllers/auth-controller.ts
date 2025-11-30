@@ -1,6 +1,6 @@
 import type { ControllerDeps, TokenPayload } from '../types/auth-types.js';
 import type { Request, Response, NextFunction } from 'express';
-import { registerSchema } from '../types/auth-types.js';
+import { recoverPasswordSchema, registerSchema, setNewPasswordSchema } from '../types/auth-types.js';
 import { createToken, verifyToken } from '../utils/auth.js';
 import { ValidationError } from '../types/errors.js';
 import { sendPasswordRecoveryEmail } from '../utils/sendEmail.js';
@@ -58,10 +58,7 @@ export const authController = (deps: ControllerDeps) => ({
   },
   recoverPassword: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email } = req.body;
-      if (!email) {
-        throw new ValidationError('email is required');
-      }
+      const { email } = recoverPasswordSchema.parse(req.body);
       const user = await deps.authService.findUser({ email });
       const token = createToken({ id: user.id, expires: true });
       await sendPasswordRecoveryEmail({ email: user.email, token });
@@ -73,10 +70,7 @@ export const authController = (deps: ControllerDeps) => ({
 
   setNewPassword: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token, newPassword } = req.body;
-      if (!token || !newPassword) {
-        throw new ValidationError('token and newPassword are required');
-      }
+      const { token, newPassword } = setNewPasswordSchema.parse(req.body);
       const decoded = verifyToken(token) as TokenPayload;
       await deps.authService.updatePassword(decoded.id, newPassword);
       res.json({ message: 'Password updated' });

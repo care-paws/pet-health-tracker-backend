@@ -26,6 +26,15 @@ export const registerSchema = z.object({
   password: z.string().min(6),
 });
 
+export const recoverPasswordSchema = z.object({
+  email: z.email(),
+});
+
+export const setNewPasswordSchema = z.object({
+  newPassword: z.string().min(6),
+  token: z.string(),
+});
+
 export type RegisterSchema = z.infer<typeof registerSchema>;
 
 export type SafeUser = Omit<User, 'passwordHash'>;

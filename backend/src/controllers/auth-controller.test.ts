@@ -1,7 +1,11 @@
 import { vi, describe, it, beforeEach, expect } from 'vitest';
 import type { Request, Response, NextFunction } from 'express';
 import { authController } from './auth-controller.js';
-import { registerSchema } from '../types/auth-types.js';
+import {
+  registerSchema,
+  recoverPasswordSchema,
+  setNewPasswordSchema,
+} from '../types/auth-types.js';
 import { createToken, verifyToken } from '../utils/auth.js';
 import { sendPasswordRecoveryEmail } from '../utils/sendEmail.js';
 
@@ -9,6 +13,8 @@ const MOCK_TOKEN = 'mocked-jwt-token-12345';
 
 vi.mock('../types/auth-types.js', () => ({
   registerSchema: { parse: vi.fn() },
+  recoverPasswordSchema: { parse: vi.fn() },
+  setNewPasswordSchema: { parse: vi.fn() },
 }));
 
 vi.mock('../utils/auth.js', () => ({
@@ -155,7 +161,7 @@ describe('auth-controller', () => {
           updatePassword: vi.fn(),
         },
       };
-
+      vi.mocked(recoverPasswordSchema.parse).mockReturnValue({ email });
       vi.mocked(createToken).mockReturnValue(MOCK_TOKEN);
       const controller = authController(deps);
       await controller.recoverPassword(reqFn, resFn, nextFn);
@@ -200,6 +206,10 @@ describe('auth-controller', () => {
           updatePassword: vi.fn(),
         },
       };
+      vi.mocked(setNewPasswordSchema.parse).mockReturnValue({
+        token: MOCK_TOKEN,
+        newPassword: '123456',
+      });
       vi.mocked(verifyToken).mockReturnValue({ id: '1' });
       const controller = authController(deps);
       await controller.setNewPassword(reqFn, resFn, nextFn);
