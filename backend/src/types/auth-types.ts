@@ -4,7 +4,9 @@ import type { JwtPayload } from 'jsonwebtoken';
 
 export interface IAuthService {
   register: (data: RegisterPayload) => Promise<void>;
-  login: (...args: any) => Promise<SafeUser>;
+  login: (data: RegisterPayload) => Promise<SafeUser>;
+  findUser: (data: FindUserPayload) => Promise<SafeUser>;
+  updatePassword: (id: string, password: string) => Promise<void>;
 }
 export interface ControllerDeps {
   authService: IAuthService;
@@ -13,6 +15,10 @@ export interface ControllerDeps {
 export interface RegisterPayload {
   email: string;
   password: string;
+}
+
+export interface FindUserPayload {
+  email: string;
 }
 
 export const registerSchema = z.object({
@@ -26,7 +32,8 @@ export type SafeUser = Omit<User, 'passwordHash'>;
 
 export interface TokenPayload {
   id: string;
-  email: string;
+  email?: string;
+  expires?: boolean;
 }
 
 declare global {
