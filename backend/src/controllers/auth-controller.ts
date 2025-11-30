@@ -2,7 +2,6 @@ import type { ControllerDeps, TokenPayload } from '../types/auth-types.js';
 import type { Request, Response, NextFunction } from 'express';
 import { recoverPasswordSchema, registerSchema, setNewPasswordSchema } from '../types/auth-types.js';
 import { createToken, verifyToken } from '../utils/auth.js';
-import { ValidationError } from '../types/errors.js';
 import { sendPasswordRecoveryEmail } from '../utils/sendEmail.js';
 
 const isProd = process.env.NODE_ENV === 'production';
