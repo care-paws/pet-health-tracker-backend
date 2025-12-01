@@ -1,5 +1,9 @@
 import type { PrismaClient } from '../generated/prisma/client.js';
-import type { RegisterPayload, SafeUser } from '../types/auth-types.js';
+import type {
+  FindUserPayload,
+  RegisterPayload,
+  SafeUser,
+} from '../types/auth-types.js';
 import { NotFoundError, ValidationError } from '../types/errors.js';
 import { hash, compare } from '../utils/auth.js';
 
@@ -39,5 +43,24 @@ export class AuthService {
     }
     const { passwordHash, ...safeUser } = foundUser;
     return safeUser;
+  }
+
+  async findUser(data: FindUserPayload): Promise<SafeUser> {
+    const foundUser = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+    if (!foundUser) {
+      throw new NotFoundError('User not found.');
+    }
+    const { passwordHash, ...safeUser } = foundUser;
+    return safeUser;
+  }
+
+  async updatePassword(id: string, password: string): Promise<void> {
+    const hashedPassword = await hash(password);
+    await this.prisma.user.update({
+      where: { id },
+      data: { passwordHash: hashedPassword },
+    });
   }
 }

@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, expectTypeOf } from 'vitest';
 import { AuthService } from './auth-service.js';
 import prismaMock from '../__mocks__/client.js';
-import type { RegisterPayload } from '../types/auth-types.js';
+import type { RegisterPayload, SafeUser } from '../types/auth-types.js';
 import { compare, hash } from '../utils/auth.js';
+import type { User } from '../generated/prisma/client.js';
 
 const service = new AuthService(prismaMock);
 
@@ -88,9 +89,41 @@ describe('auth-service', () => {
       });
       vi.mocked(compare).mockResolvedValue(true);
       const result = await service.login(loginPayload);
-      expect(result).toHaveProperty('id')
-      expect(result).toHaveProperty('email')
-      expect(result).not.toHaveProperty('passwordHash')
+      expectTypeOf(result).toEqualTypeOf<SafeUser>;
+    });
+  });
+
+  describe('findUser', () => {
+    it('should throw an error if user is not found', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(null);
+      await expect(() =>
+        service.findUser({ email: 'test@email.com' })
+      ).rejects.toThrow('User not found.');
+    });
+
+    it('should return a SafeUser type object', async () => {
+      const foundUser: User = {
+        id: '1',
+        email: 'test@email.com',
+        passwordHash: 'hash123456',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      prismaMock.user.findUnique.mockResolvedValue(foundUser);
+      const result = await service.findUser({ email: 'test@email.com' });
+      expectTypeOf(result).toEqualTypeOf<SafeUser>;
+    });
+  });
+
+  describe('updatePassword', () => {
+    it('should call hash function with the password and prisma.update with id and hashed password', async () => {
+      vi.mocked(hash).mockResolvedValue('hash123');
+      await service.updatePassword('1', 'newPassword');
+      expect(hash).toHaveBeenCalledWith('newPassword');
+      expect(prismaMock.user.update).toHaveBeenCalledWith({
+        where: { id: '1' },
+        data: { passwordHash: 'hash123' },
+      });
     });
   });
 });
