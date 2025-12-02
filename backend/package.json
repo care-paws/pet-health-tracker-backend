@@ -24,6 +24,7 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^24.10.1",
     "@types/nodemailer": "^7.0.4",
+    "@vitest/coverage-v8": "^4.0.15",
     "prisma": "^6.19.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
@@ -39,8 +40,8 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^7.0.11",
     "multer": "^2.0.2",
+    "nodemailer": "^7.0.11",
     "zod": "^4.1.12"
   }
 }
