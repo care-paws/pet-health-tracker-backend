@@ -29,12 +29,6 @@ export async function scheduleEmailReminder(
 
   const delay = scheduledTime - now
 
-  if (delay <= 0) {
-    console.warn(
-      'El triggerTime es en el pasado o ahora. Enviando inmediatamente.'
-    )
-  }
-
   await reminderQueue.add(
     'sendReminder',
     {
@@ -52,5 +46,4 @@ export async function scheduleEmailReminder(
     }
   )
 
-  console.log(`Recordatorio programado para ${triggerTime.toISOString()}`)
 }

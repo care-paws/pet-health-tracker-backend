@@ -3,6 +3,8 @@ import { Redis } from 'ioredis'
 import nodemailer from 'nodemailer'
 import { remindersService } from '../../dist/services/index.js'
 
+// Aclaración: El entorno de prueba de Mailgun solo permite enviar emails a las direcciones autorizadas (hasta 5). Como estamos utilizando un dominio de prueba, los emails llegan a la carpeta SPAM.
+
 const mailgunUser = process.env.MAILGUN_SMTP_USER
 const mailgunPass = process.env.MAILGUN_SMTP_PASSWORD
 const redisPort = process.env.REDIS_PORT
@@ -42,7 +44,6 @@ const worker = new Worker(
   async (job) => {
     const { to, subject, body, eventUrl, reminderId, eventDate } = job.data
 
-    console.log(`Procesando recordatorio para: ${to} - Asunto: ${subject}`)
     let html = ''
     if (eventUrl !== '') {
       html = `
@@ -62,28 +63,26 @@ const worker = new Worker(
     }
 
     try {
-      const info = await transporter.sendMail({
+      await transporter.sendMail({
         from: `"Care Paws" <${mailgunUser}>`,
         to: to,
         subject: subject,
         html: html
       })
       await remindersService.update(reminderId, { status: 'SENT' })
-      console.log(`✅ Email enviado a ${to}. Mensaje ID: ${info.messageId}`)
     } catch (error) {
-      console.error(`❌ Error al enviar email a ${to}:`, error)
-      throw new Error('Fallo en el envío del email')
+      throw new Error('Error sending email')
     }
   },
   { connection }
 )
 
 worker.on('completed', (job) => {
-  console.log(`Job ${job.id} completado con éxito.`)
+  console.log(`Job ${job.id} completed successfully.`)
 })
 
 worker.on('failed', (job, err) => {
-  console.error(`Job falló. Error: ${err.message}`)
+  console.error(`Job failed. Error: ${err.message}`)
 })
 
-console.log('Worker de recordatorios iniciado. Esperando trabajos...')
+console.log('Reminders worker started. Waiting for jobs...')
