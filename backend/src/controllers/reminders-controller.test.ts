@@ -89,7 +89,8 @@ describe('reminder-controller', () => {
         'mensaje',
         'eventURl',
         '1',
-        new Date('2025-12-12T12:00:00Z')
+        new Date('2025-12-12T12:00:00Z'),
+        ''
       )
 
       expect(createReminderSchema.parse).toHaveBeenCalledWith(reqBody)

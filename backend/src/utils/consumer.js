@@ -40,13 +40,14 @@ const transporter = nodemailer.createTransport({
 const worker = new Worker(
   'emailReminders',
   async (job) => {
-    const { to, subject, body, eventUrl, reminderId } = job.data
+    const { to, subject, body, eventUrl, reminderId, eventDate } = job.data
 
     console.log(`Procesando recordatorio para: ${to} - Asunto: ${subject}`)
     let html = ''
     if (eventUrl !== '') {
       html = `
         <h1>${subject}</h1>
+        <p>Día y hora: ${eventDate}</p>
         <p>${body}</p>
         <p style="margin: 20px 0;">
           <a href="${eventUrl}" style="background-color: #FFBECC; color: black; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 5px; font-weight: bold;">
@@ -56,6 +57,7 @@ const worker = new Worker(
         `
     } else {
       html = `<h1>${subject}</h1>
+      <p>Día y hora: ${eventDate}</p>
         <p>${body}</p>`
     }
 

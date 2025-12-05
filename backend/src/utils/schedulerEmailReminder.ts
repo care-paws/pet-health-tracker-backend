@@ -21,7 +21,8 @@ export async function scheduleEmailReminder(
   message: string,
   eventUrl: string,
   reminderId: string,
-  triggerTime: Date
+  triggerTime: Date,
+  eventDate: string
 ) {
   const now = Date.now()
   const scheduledTime = triggerTime.getTime()
@@ -36,7 +37,14 @@ export async function scheduleEmailReminder(
 
   await reminderQueue.add(
     'sendReminder',
-    { to: toEmail, subject: subject, body: message, eventUrl, reminderId },
+    {
+      to: toEmail,
+      subject: subject,
+      body: message,
+      eventUrl,
+      reminderId,
+      eventDate
+    },
     {
       delay: delay > 0 ? delay : 100,
       jobId: `reminder-${toEmail}-${scheduledTime}`,

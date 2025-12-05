@@ -32,13 +32,18 @@ export const remindersController = (deps: ControllerDeps) => ({
           throw new Error(`${eventType} is not known`)
       }
       const subject = `Recordatorio de ${event}`
+      const eventDate = newReminder.event.date.toLocaleString('es-AR', {
+        dateStyle: 'full',
+        timeStyle: 'short'
+      })
       await scheduleEmailReminder(
         user.email!,
         subject,
         data.message || '',
         data.eventUrl || '',
         newReminder.id,
-        new Date(data.triggerTime)
+        new Date(data.triggerTime),
+        eventDate
       )
       res.status(201).json(newReminder)
     } catch (error) {
