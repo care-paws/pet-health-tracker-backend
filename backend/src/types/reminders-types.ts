@@ -31,7 +31,7 @@ export interface UpdatePayload {
 }
 
 export const createReminderSchema = z.object({
-  triggerTime: z.string(),
+  triggerTime: z.iso.datetime({ offset: true }),
   eventId: z.string(),
   message: z.string().optional(),
   eventUrl: z.string().optional()
