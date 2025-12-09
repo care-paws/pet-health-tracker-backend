@@ -4,6 +4,7 @@ import authRouter from './auth-router.js'
 import remindersRouter from './reminders-router.js'
 import petRouter from './pets-router.js'
 import eventsRouter from './events-router.js'
+import { swaggerUi, swaggerSpec  } from '../docs/swagger.js';
 
 const apiRouter = (app: Express) => {
   const router = express.Router()
@@ -14,6 +15,8 @@ const apiRouter = (app: Express) => {
   router.use('/api/pets/:id/events', eventsRouter)
 
   router.use('/api/reminders', remindersRouter)
+
+  router.use('/api/doc',swaggerUi.serve,swaggerUi.setup(swaggerSpec))
 
   app.use(router)
 }
