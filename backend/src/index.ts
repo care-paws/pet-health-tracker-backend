@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000
 const app = express()
 app.use(cookieParser())
 app.use(express.json())
-app.use(csrfProtection)
+//app.use(csrfProtection)
 apiRouter(app)
 app.use(errorHandler)
 
