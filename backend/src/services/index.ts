@@ -13,3 +13,7 @@ export const petService = new PetService(prisma)
 import { EventService } from './event-services.js'
 
 export const eventService = new EventService(prisma)
+
+import { CleanupService } from './cleanup-service.js'
+
+export const cleanupService = new CleanupService(prisma);

@@ -5,6 +5,7 @@ import remindersRouter from './reminders-router.js'
 import petRouter from './pets-router.js'
 import eventsRouter from './events-router.js'
 import { swaggerUi, swaggerSpec  } from '../docs/swagger.js';
+import cleanupRouter from './cleanup-router.js';
 
 const apiRouter = (app: Express) => {
   const router = express.Router()
@@ -17,6 +18,8 @@ const apiRouter = (app: Express) => {
   router.use('/api/reminders', remindersRouter)
 
   router.use('/api/doc',swaggerUi.serve,swaggerUi.setup(swaggerSpec))
+
+  router.use('/api/cleanup', cleanupRouter)
 
   app.use(router)
 }
