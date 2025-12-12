@@ -14,13 +14,13 @@ export const registerPetsSchema = z.object({
     .min(3, { message: 'El nombre debe tener al menos 3 caracteres' }),
   species: z.string().min(1, { message: 'La especie es obligatoria' }),
   breed: z.string().min(1, { message: 'La raza es obligatoria' }),
-  age: z.coerce
-    .number({ message: 'La edad debe ser un número' })
-    .int({ message: 'La edad debe ser un número entero' })
-    .positive({ message: 'La edad debe ser mayor a cero' }),
+  gender: z.enum(['male', 'female']),
+  age: z.iso.datetime({ offset: true }),
   weight: z.coerce
     .number({ message: 'El peso debe ser un número' })
-    .positive({ message: 'El peso debe ser positivo y mayor a cero' })
+    .positive({ message: 'El peso debe ser positivo y mayor a cero' }),
+  weighed_at: z.iso.datetime({ offset: true }).optional(),
+  notes: z.string().optional()
   //photoUrl: z.url({message:"Se espera una URL válida"})
 })
 
