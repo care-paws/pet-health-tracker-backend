@@ -50,6 +50,7 @@ describe('reminder-controller', () => {
     it('should call remindersService.create and respond with newReminder', async () => {
       const reqBody = {
         eventId: '1',
+        description: 'bla',
         triggerTime: '2025-12-12T12:00:00Z'
       } satisfies CreateReminderSchema
       const { reqFn, resFn, nextFn } = setupMocks({ body: reqBody })
@@ -60,6 +61,7 @@ describe('reminder-controller', () => {
         id: '1',
         eventId: '1',
         triggerTime: new Date('2025-12-12T12:00:00Z'),
+        description: 'bla',
         status: 'PENDING',
         event: {
           id: '1',

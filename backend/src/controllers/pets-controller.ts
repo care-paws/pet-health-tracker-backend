@@ -31,8 +31,11 @@ export const petController = (deps: ControllerDeps) => ({
         name: data.name,
         species: data.species,
         breed: data.breed,
+        gender: data.gender,
         age: data.age,
         weight: data.weight,
+        weighedAt: data.weighedAt ? data.weighedAt: null,
+        notes: data.notes ? data.notes : null,
         photoUrl: photoUrl.url
       })
       return res.status(201).json({
@@ -97,11 +100,15 @@ export const petController = (deps: ControllerDeps) => ({
         name: data.name,
         species: data.species,
         breed: data.breed,
+        gender: data.gender,
         age: data.age,
-        weight: data.weight        
+        weight: data.weight,        
+        weighed_at: data.weighedAt ? data.weighedAt : null,
+        notes: data.notes ? data.notes : null,
       };
 
       if (photoUrl?.url){ 
+        
         updateData.photoUrl = photoUrl.url;
       }
       const editPetsS = await deps.petService.editPets(petId, updateData)

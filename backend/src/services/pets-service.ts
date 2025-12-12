@@ -1,5 +1,4 @@
 import type { PrismaClient } from '../generated/prisma/client.js'
-
 export class PetService {
   prisma: PrismaClient
 
@@ -12,16 +11,22 @@ export class PetService {
     name,
     species,
     breed,
+    gender,
     age,
     weight,
+    weighedAt,
+    notes,
     photoUrl
   }: {
     userId: string
     name: string
     species: string
+    gender: string
     breed: string
-    age: number
+    age: string | Date
+    notes?: string | null
     weight: number
+    weighedAt?: string | null
     photoUrl: string
   }) {
     // realizar todas las validaciones
@@ -40,11 +45,6 @@ export class PetService {
     if (typeof breed !== 'string') {
       throw new Error('La raza debe ser texto')
     }
-
-    if (typeof age !== 'number' || age <= 0) {
-      throw new Error('La edad debe ser un número mayor que 0')
-    }
-
     if (typeof weight !== 'number' || weight <= 0) {
       throw new Error('El peso debe ser un número mayor que 0')
     }
@@ -59,8 +59,11 @@ export class PetService {
         name,
         species,
         breed,
+        gender,
         age,
+        notes: notes ? notes : null,
         weight,
+        weighedAt: weighedAt ? weighedAt : null,
         photoUrl
       }
     })
@@ -82,24 +85,27 @@ export class PetService {
 
   async deletePet(id: string) {
     const petDelete = await this.prisma.pet.findUnique({
-      where: {id}
-    });
-    if (!petDelete){      
-      return null;
-    }        
+      where: { id }
+    })
+    if (!petDelete) {
+      return null
+    }
     return await this.prisma.pet.delete({
-        where: {id}
-      });      
+      where: { id }
+    })
   }
-  
+
   async editPets(
     id: string,
     data: {
       name: string
       species: string
       breed: string
-      age: number
+      age: string | Date
       weight: number
+      gender: string
+      weighedAt?: string | null
+      notes?: string | null
       photoUrl: string
     }
   ) {

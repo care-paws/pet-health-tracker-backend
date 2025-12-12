@@ -5,6 +5,7 @@ import { z } from 'zod'
 export interface ReminderWithEvent {
   id: string
   triggerTime: Date
+  description: string | null
   status: ReminderStatus
   eventId: string
   event: Event
@@ -23,17 +24,19 @@ export interface ControllerDeps {
 export interface CreatePayload {
   triggerTime: string
   eventId: string
+  description?: string | null
 }
 
 export interface UpdatePayload {
   triggerTime?: Date
   status?: ReminderStatus
+  description?: string | null
 }
 
 export const createReminderSchema = z.object({
   triggerTime: z.iso.datetime({ offset: true }),
   eventId: z.string(),
-  message: z.string().optional(),
+  description: z.string().optional(),
   eventUrl: z.string().optional()
 })
 
